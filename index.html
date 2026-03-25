@@ -5,35 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>成语来解压</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-user-select: none;
-            user-select: none;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-user-select: none; user-select: none; }
         body {
-            background: linear-gradient(180deg, rgba(232,228,217,0.85) 0%, rgba(212,207,196,0.8) 50%, rgba(196,191,180,0.75) 100%), url('bg.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: #f5f0e6;
             min-height: 100vh;
-            font-family: 'STKaiti', 'KaiTi', '楷体', serif;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
             color: #333;
             overflow-x: hidden;
         }
-        /* 水墨装饰 */
-        .ink-splash {
+        .bg-container {
             position: fixed;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.15;
+            top: 0; left: 0; right: 0; bottom: 0;
             z-index: 0;
-            pointer-events: none;
         }
-        .ink-1 { width: 300px; height: 300px; background: #2a2a2a; top: -100px; left: -100px; }
-        .ink-2 { width: 400px; height: 400px; background: #3a3a3a; bottom: -150px; right: -150px; }
-        .ink-3 { width: 200px; height: 200px; background: #4a4a4a; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .bg-container img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
         
         /* 顶部状态栏 */
         .header {
@@ -42,255 +29,293 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            background: linear-gradient(180deg, rgba(42,42,42,0.9) 0%, rgba(42,42,42,0.7) 100%);
+            padding: 12px 15px;
         }
         .settings-btn {
-            width: 36px;
-            height: 36px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f0d060'%3E%3Cpath d='M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z'/%3E%3C/svg%3E") center/contain no-repeat;
+            width: 40px; height: 40px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z'/%3E%3C/svg%3E") center/60% no-repeat;
             cursor: pointer;
         }
         .coin-display {
             display: flex;
             align-items: center;
-            gap: 5px;
-            background: #1a1a1a;
-            padding: 5px 12px;
-            border-radius: 15px;
-            border: 1px solid #f0d060;
+            background: rgba(0,0,0,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
         }
         .coin-icon {
-            width: 20px;
-            height: 20px;
+            width: 24px; height: 24px;
             background: linear-gradient(145deg, #f0d060, #d4a840);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #1a1a1a;
-            font-weight: bold;
+            margin-right: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; color: #8b6914;
         }
-        .coin-count {
-            color: #f0d060;
-            font-size: 14px;
-            font-weight: bold;
-        }
+        .coin-count { color: #333; font-size: 16px; font-weight: bold; }
         
-        /* 主页面 */
-        .home-page {
+        /* 主内容 */
+        .main-content {
             position: relative;
             z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 30px 20px;
-            min-height: calc(100vh - 66px);
+            padding: 0 20px;
+        }
+        
+        /* 标题区 */
+        .title-area {
+            text-align: center;
+            margin: 30px 0 20px;
+            position: relative;
+        }
+        .title-glow {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px; height: 120px;
+            background: radial-gradient(ellipse, rgba(100,180,180,0.3) 0%, transparent 70%);
+            border-radius: 50%;
         }
         .game-title {
-            font-size: 42px;
+            position: relative;
+            font-size: 48px;
+            font-weight: 900;
             color: #1a1a1a;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            margin-bottom: 10px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
             letter-spacing: 8px;
         }
         .title-seal {
             position: absolute;
-            top: 80px;
-            right: 30px;
-            width: 40px;
-            height: 40px;
+            top: -10px; right: -40px;
+            width: 45px; height: 45px;
             background: #c41e3a;
             border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #f0d060;
-            font-size: 14px;
-            transform: rotate(15deg);
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-        }
-        .subtitle {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 40px;
+            color: #fff;
+            font-size: 12px;
+            transform: rotate(12deg);
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
         }
         
-        /* 功能按钮 */
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+        /* 功能按钮区域 */
+        .menu-area {
+            position: relative;
             width: 100%;
             max-width: 350px;
-            margin-bottom: 40px;
-        }
-        .menu-btn {
-            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(240,235,225,0.9));
-            border: 2px solid #8b7355;
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .menu-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-        .menu-icon {
-            font-size: 32px;
-        }
-        .menu-text {
-            font-size: 14px;
-            color: #4a4a4a;
+            margin: 30px 0;
         }
         
-        /* 开始游戏按钮 */
+        /* 中心主按钮 */
         .start-btn {
-            background: linear-gradient(145deg, #f0d060, #d4a840);
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px; height: 70px;
+            background: linear-gradient(145deg, #f5c842, #e8b830);
             border: none;
-            border-radius: 25px;
-            padding: 15px 60px;
-            font-size: 20px;
+            border-radius: 15px;
+            font-size: 18px;
             font-weight: bold;
             color: #1a1a1a;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(212,168,64,0.4);
-            transition: all 0.2s;
-            margin-bottom: 10px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            z-index: 2;
         }
-        .start-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(212,168,64,0.5);
+        .free-label {
+            position: absolute;
+            bottom: -25px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #4a90a4;
+            white-space: nowrap;
+            background: rgba(74,144,164,0.1);
+            padding: 2px 10px;
+            border-radius: 10px;
         }
-        .free-count {
-            color: #666;
+        
+        /* 四个辅助按钮 */
+        .menu-btn {
+            position: absolute;
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+        .menu-btn-icon {
+            width: 50px; height: 50px;
+            background: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            margin-bottom: 5px;
+        }
+        .menu-btn-text {
             font-size: 12px;
+            color: #333;
+            background: rgba(255,255,255,0.8);
+            padding: 2px 8px;
+            border-radius: 8px;
         }
+        
+        .menu-btn-tl { top: 0; left: 10px; }  /* 每日签到 */
+        .menu-btn-tr { top: 0; right: 10px; }  /* 每日任务 */
+        .menu-btn-bl { bottom: 0; left: 10px; }  /* 排行榜 */
+        .menu-btn-br { bottom: 0; right: 10px; }  /* 免费福利 */
+        
+        /* 间距调整让主按钮在中间 */
+        .menu-btn-tl { top: 20px; left: 20px; }
+        .menu-btn-tr { top: 20px; right: 20px; }
+        .menu-btn-bl { bottom: 40px; left: 20px; }
+        .menu-btn-br { bottom: 40px; right: 20px; }
+        
+        .spacer { height: 120px; }
         
         /* 游戏页面 */
         .game-page {
             display: none;
             position: relative;
             z-index: 10;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
             min-height: 100vh;
+            flex-direction: column;
         }
-        .game-page.active {
-            display: flex;
-        }
-        .home-page.hidden {
-            display: none;
-        }
+        .game-page.active { display: flex; }
+        .home-page.hidden { display: none; }
         
-        /* 游戏头部 */
+        /* 游戏顶部 */
         .game-header {
-            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            padding: 10px 15px;
         }
-        .back-btn {
-            background: none;
-            border: 2px solid #8b7355;
-            border-radius: 20px;
-            padding: 8px 15px;
-            font-size: 14px;
-            color: #4a4a4a;
-            cursor: pointer;
-        }
-        .game-info {
-            display: flex;
-            gap: 20px;
-        }
-        .info-item {
-            text-align: center;
-        }
-        .info-label {
-            font-size: 11px;
-            color: #888;
-        }
-        .info-value {
-            font-size: 18px;
+        .level-title {
+            font-size: 20px;
             font-weight: bold;
             color: #1a1a1a;
         }
-        
-        /* 接龙提示 */
-        .idiom-hint {
-            background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
-            border-radius: 15px;
-            padding: 15px 30px;
-            margin-bottom: 20px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        .game-header-btns {
+            display: flex;
+            gap: 10px;
         }
-        .idiom-hint-label {
-            font-size: 12px;
-            color: #888;
-            margin-bottom: 5px;
-        }
-        .idiom-hint-text {
-            font-size: 28px;
-            color: #f0d060;
-            letter-spacing: 4px;
-        }
-        
-        /* 游戏面板 */
-        .board-container {
-            background: linear-gradient(145deg, rgba(42,42,42,0.95), rgba(32,32,32,0.95));
-            border-radius: 20px;
-            padding: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
-        }
-        .board {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 6px;
-        }
-        .tile {
-            width: 48px;
-            height: 56px;
-            background: linear-gradient(145deg, #f5f0e6, #e8e0d0);
-            border-radius: 8px;
+        .header-btn {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
-            color: #2a2a2a;
+            font-size: 16px;
+        }
+        .pause-btn { background: #4a90a4; color: #fff; }
+        .help-btn { background: #e8a830; color: #fff; }
+        
+        .timer {
+            display: flex;
+            align-items: center;
+            background: rgba(0,0,0,0.4);
+            padding: 5px 12px;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        /* 目标成语区 */
+        .target-area {
+            background: rgba(240,240,240,0.9);
+            margin: 10px 15px;
+            padding: 12px;
+            border-radius: 10px;
+        }
+        .target-idioms {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+        .target-idiom {
+            flex: 1;
+            text-align: center;
+            padding: 8px 5px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .target-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        .target-pinyin {
+            font-size: 10px;
+            color: #888;
+            margin-top: 2px;
+        }
+        
+        /* 游戏区域 */
+        .play-area {
+            flex: 1;
+            background: linear-gradient(145deg, #2a5a4a, #1a4a3a);
+            margin: 10px 15px;
+            border-radius: 15px;
+            position: relative;
+            min-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .play-area-bg {
+            position: absolute;
+            width: 150px; height: 150px;
+            background: radial-gradient(ellipse, rgba(100,180,140,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .remaining-hint {
+            position: absolute;
+            top: 10px; right: 10px;
+            color: rgba(255,255,255,0.8);
+            font-size: 12px;
+        }
+        
+        /* 方块网格 */
+        .tile-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 20px;
+            width: 100%;
+            max-width: 320px;
+        }
+        .tile {
+            background: #fff;
+            border-radius: 8px;
+            padding: 10px 5px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #1a1a1a;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
             cursor: pointer;
             transition: all 0.2s;
             border: 2px solid transparent;
-            text-align: center;
-            line-height: 1.2;
-            padding: 2px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .tile:hover {
-            transform: scale(1.08);
-            border-color: #f0d060;
-        }
+        .tile:hover { transform: scale(1.05); }
         .tile.selected {
             border-color: #f0d060;
-            background: linear-gradient(145deg, #ffe8a0, #f0d060);
-            box-shadow: 0 0 15px rgba(240,208,96,0.6);
+            box-shadow: 0 0 15px rgba(240,208,96,0.8);
         }
         .tile.matched {
             animation: match 0.4s ease forwards;
         }
         @keyframes match {
             0% { transform: scale(1); }
-            50% { transform: scale(1.3); background: #90EE90; }
+            50% { transform: scale(1.2); background: #90EE90; }
             100% { transform: scale(0); opacity: 0; }
         }
         .tile.empty {
@@ -299,83 +324,104 @@
             cursor: default;
         }
         
-        /* 剩余显示 */
-        .remaining-display {
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 14px;
-            color: #666;
+        /* 收集槽 */
+        .collect-bar {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            padding: 10px 15px;
+            background: rgba(255,255,255,0.9);
+            margin: 0 15px;
+            border-radius: 10px;
         }
-        .remaining-count {
-            color: #c41e3a;
-            font-weight: bold;
+        .collect-slot {
+            width: 40px; height: 45px;
+            background: rgba(255,255,255,0.6);
+            border: 2px dashed #ccc;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #888;
+        }
+        .collect-slot.locked {
+            background: rgba(200,200,200,0.3);
+        }
+        .collect-slot.locked::after {
+            content: '解锁';
+            font-size: 8px;
+            color: #aaa;
         }
         
         /* 道具栏 */
         .tools-bar {
             display: flex;
-            gap: 20px;
             justify-content: center;
+            gap: 15px;
+            padding: 15px;
         }
         .tool-btn {
-            background: linear-gradient(145deg, #f5f0e6, #e8e0d0);
-            border: 2px solid #8b7355;
-            border-radius: 12px;
-            padding: 12px 20px;
+            width: 60px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 6px;
             cursor: pointer;
-            transition: all 0.2s;
-            font-size: 14px;
-            color: #4a4a4a;
-        }
-        .tool-btn:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(145deg, #fff, #f5f0e6);
         }
         .tool-icon {
-            font-size: 18px;
+            width: 50px; height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 5px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+        .tool-icon.move { background: linear-gradient(145deg, #5ba8c8, #4a90a4); }
+        .tool-icon.magnet { background: linear-gradient(145deg, #5ba8c8, #4a90a4); }
+        .tool-icon.reset { background: linear-gradient(145deg, #8bc34a, #7cb342); }
+        .tool-icon.remove { background: linear-gradient(145deg, #f5c842, #e8b830); }
+        .tool-count {
+            font-size: 10px;
+            color: #c41e3a;
+            font-weight: bold;
+        }
+        .tool-label {
+            font-size: 10px;
+            color: #666;
         }
         
-        /* 结果弹窗 */
+        /* 弹窗 */
         .modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
             z-index: 100;
             align-items: center;
             justify-content: center;
         }
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
         .modal {
-            background: linear-gradient(180deg, #f5f0e6, #e8e0d0);
+            background: #f5f0e6;
             border-radius: 20px;
             padding: 30px;
             text-align: center;
-            max-width: 300px;
-            border: 3px solid #8b7355;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 280px;
         }
         .modal-title {
-            font-size: 28px;
-            color: #1a1a1a;
+            font-size: 24px;
+            font-weight: bold;
             margin-bottom: 15px;
         }
         .modal-text {
-            font-size: 16px;
+            font-size: 14px;
             color: #666;
             margin-bottom: 20px;
-            line-height: 1.5;
         }
         .modal-btn {
-            background: linear-gradient(145deg, #f0d060, #d4a840);
+            background: linear-gradient(145deg, #f5c842, #e8b830);
             border: none;
             border-radius: 20px;
             padding: 12px 40px;
@@ -384,139 +430,123 @@
             color: #1a1a1a;
             cursor: pointer;
         }
-        .modal-btn:hover {
-            transform: translateY(-2px);
-        }
-        
-        /* 水墨山水背景 */
-        .mountain-bg {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 40%;
-            z-index: 1;
-            pointer-events: none;
-        }
-        .mountain {
-            position: absolute;
-            bottom: 0;
-            width: 0;
-            height: 0;
-            border-style: solid;
-        }
-        .m1 {
-            left: 5%;
-            border-width: 0 80px 150px 80px;
-            border-color: transparent transparent rgba(100,100,100,0.2) transparent;
-        }
-        .m2 {
-            left: 25%;
-            border-width: 0 120px 220px 120px;
-            border-color: transparent transparent rgba(80,80,80,0.25) transparent;
-        }
-        .m3 {
-            left: 55%;
-            border-width: 0 100px 180px 100px;
-            border-color: transparent transparent rgba(90,90,90,0.2) transparent;
-        }
-        .m4 {
-            left: 75%;
-            border-width: 0 90px 140px 90px;
-            border-color: transparent transparent rgba(70,70,70,0.15) transparent;
-        }
     </style>
 </head>
 <body>
-    <!-- 水墨装饰 -->
-    <div class="ink-splash ink-1"></div>
-    <div class="ink-splash ink-2"></div>
-    <div class="ink-splash ink-3"></div>
-    
-    <!-- 山水背景 -->
-    <div class="mountain-bg">
-        <div class="mountain m1"></div>
-        <div class="mountain m2"></div>
-        <div class="mountain m3"></div>
-        <div class="mountain m4"></div>
+    <div class="bg-container">
+        <img src="bg.jpg" alt="">
     </div>
     
-    <!-- 顶部状态栏 -->
-    <div class="header">
-        <div class="settings-btn"></div>
-        <div class="coin-display">
-            <div class="coin-icon">金</div>
-            <span class="coin-count" id="coinCount">0</span>
-        </div>
-    </div>
-    
-    <!-- 主页面 -->
+    <!-- 首页 -->
     <div class="home-page" id="homePage">
-        <h1 class="game-title">成语来解压</h1>
-        <div class="title-seal">印</div>
-        <p class="subtitle">传承千年智慧 · 放松一刻心情</p>
-        
-        <div class="menu-grid">
-            <div class="menu-btn" onclick="showPage('signin')">
-                <span class="menu-icon">📅</span>
-                <span class="menu-text">每日签到</span>
-            </div>
-            <div class="menu-btn" onclick="showPage('tasks')">
-                <span class="menu-icon">📜</span>
-                <span class="menu-text">每日任务</span>
-            </div>
-            <div class="menu-btn" onclick="showPage('rank')">
-                <span class="menu-icon">🏆</span>
-                <span class="menu-text">排行榜</span>
-            </div>
-            <div class="menu-btn" onclick="showPage('福利')">
-                <span class="menu-icon">🎁</span>
-                <span class="menu-text">免费福利</span>
+        <div class="header">
+            <div class="settings-btn"></div>
+            <div class="coin-display">
+                <div class="coin-icon">金</div>
+                <span class="coin-count" id="coinCount">0</span>
             </div>
         </div>
         
-        <button class="start-btn" onclick="startGame()">开始游戏</button>
-        <p class="free-count">免费挑战次数：<span id="freeCount">3</span>/3</p>
+        <div class="main-content">
+            <div class="title-area">
+                <div class="title-glow"></div>
+                <h1 class="game-title">成语来解压</h1>
+                <div class="title-seal">成语</div>
+            </div>
+            
+            <div class="menu-area">
+                <div class="menu-btn menu-btn-tl" onclick="showTip('每日签到')">
+                    <div class="menu-btn-icon">📅</div>
+                    <span class="menu-btn-text">每日签到</span>
+                </div>
+                <div class="menu-btn menu-btn-tr" onclick="showTip('每日任务')">
+                    <div class="menu-btn-icon">📜</div>
+                    <span class="menu-btn-text">每日任务</span>
+                </div>
+                
+                <button class="start-btn" onclick="startGame()">
+                    开始游戏
+                    <div class="free-label">免费挑战次数：<span id="freeCount">3</span>/3</div>
+                </button>
+                
+                <div class="menu-btn menu-btn-bl" onclick="showTip('排行榜')">
+                    <div class="menu-btn-icon">🏆</div>
+                    <span class="menu-btn-text">排行榜</span>
+                </div>
+                <div class="menu-btn menu-btn-br" onclick="showTip('免费福利')">
+                    <div class="menu-btn-icon">🎁</div>
+                    <span class="menu-btn-text">免费福利</span>
+                </div>
+            </div>
+            
+            <div class="spacer"></div>
+        </div>
     </div>
     
     <!-- 游戏页面 -->
     <div class="game-page" id="gamePage">
         <div class="game-header">
-            <button class="back-btn" onclick="backToHome()">← 返回</button>
-            <div class="game-info">
-                <div class="info-item">
-                    <div class="info-label">关卡</div>
-                    <div class="info-value" id="levelNum">1</div>
+            <span class="level-title" id="levelTitle">第 1 关</span>
+            <div class="game-header-btns">
+                <button class="header-btn pause-btn" onclick="togglePause()">⏸</button>
+                <button class="header-btn help-btn" onclick="useHint()">?</button>
+            </div>
+        </div>
+        
+        <div class="target-area">
+            <div class="target-idioms" id="targetIdioms">
+                <div class="target-idiom">
+                    <div class="target-text">不期而遇</div>
+                    <div class="target-pinyin">bù qī ér yù</div>
                 </div>
-                <div class="info-item">
-                    <div class="info-label">分数</div>
-                    <div class="info-value" id="scoreNum">0</div>
+                <div class="target-idiom">
+                    <div class="target-text">懵懵懂懂</div>
+                    <div class="target-pinyin">měng měng dǒng dǒng</div>
+                </div>
+                <div class="target-idiom">
+                    <div class="target-text">骄兵必败</div>
+                    <div class="target-pinyin">jiāo bīng bì bài</div>
                 </div>
             </div>
         </div>
         
-        <div class="idiom-hint">
-            <div class="idiom-hint-label">当前接龙成语</div>
-            <div class="idiom-hint-text" id="currentIdiom">春暖花开</div>
+        <div class="play-area">
+            <div class="play-area-bg"></div>
+            <div class="remaining-hint">通关剩余数量：<span id="remainingCount">18</span></div>
+            <div class="tile-grid" id="tileGrid"></div>
         </div>
         
-        <div class="board-container">
-            <div class="board" id="board"></div>
-        </div>
-        
-        <div class="remaining-display">
-            剩余方块：<span class="remaining-count" id="remainingNum">18</span>
+        <div class="collect-bar" id="collectBar">
+            <div class="collect-slot"></div>
+            <div class="collect-slot"></div>
+            <div class="collect-slot"></div>
+            <div class="collect-slot"></div>
+            <div class="collect-slot locked"></div>
+            <div class="collect-slot locked"></div>
+            <div class="collect-slot locked"></div>
         </div>
         
         <div class="tools-bar">
-            <button class="tool-btn" onclick="useHint()">
-                <span class="tool-icon">💡</span>
-                <span>提示</span>
-            </button>
-            <button class="tool-btn" onclick="shuffleBoard()">
-                <span class="tool-icon">🔀</span>
-                <span>洗牌</span>
-            </button>
+            <div class="tool-btn" onclick="useTool('move')">
+                <div class="tool-icon move">✋</div>
+                <span class="tool-count">0</span>
+                <span class="tool-label">移出</span>
+            </div>
+            <div class="tool-btn" onclick="useTool('magnet')">
+                <div class="tool-icon magnet">🧲</div>
+                <span class="tool-count">0</span>
+                <span class="tool-label">磁铁</span>
+            </div>
+            <div class="tool-btn" onclick="useTool('reset')">
+                <div class="tool-icon reset">🔄</div>
+                <span class="tool-count">0</span>
+                <span class="tool-label">重置</span>
+            </div>
+            <div class="tool-btn" onclick="useTool('remove')">
+                <div class="tool-icon remove">⬆</div>
+                <span class="tool-count">0</span>
+                <span class="tool-label">移出</span>
+            </div>
         </div>
     </div>
     
@@ -524,28 +554,49 @@
     <div class="modal-overlay" id="resultModal">
         <div class="modal">
             <div class="modal-title" id="modalTitle">🎉 通关成功</div>
-            <div class="modal-text" id="modalText">太棒了！成语+100</div>
+            <div class="modal-text" id="modalText">成语+100</div>
             <button class="modal-btn" onclick="nextLevel()">继续挑战</button>
         </div>
     </div>
     
     <script>
-        // 成语库
         const idioms = [
-            "春暖花开", "开天辟地", "地动山摇", "摇摇欲坠", "坠入深渊",
-            "源远流长", "长驱直入", "入木三分", "分庭抗礼", "礼尚往来",
-            "来者不善", "善罢甘休", "休养生息", "息息相关", "关怀备至",
-            "至高无上", "上下其手", "手不释卷", "卷土重来", "来日方长",
-            "长夜难明", "明明白白", "白手起家", "家破人亡", "亡羊补牢",
-            "牢不可破", "破镜重圆", "圆凿方枘", "枘凿方圆", "眉目不清",
-            "清尘浊水", "水落石出", "出生入死", "死不瞑目", "目不暇接",
-            "接二连三", "三心二意", "意气风发", "发人深省", "省吃俭用",
-            "用兵如神", "神出鬼没", "没日没夜", "夜深人静", "静观其变",
-            "变本加厉", "厉兵秣马", "马到成功", "功德无量", "量入为出",
-            "年富力强", "强弩之末", "二龙戏珠", "珠联璧合", "合浦珠还",
-            "还我河山", "山清水秀", "秀外慧中", "中原逐鹿", "鹿死谁手",
-            "手舞足蹈", "蹈厉之志", "志同道合", "和盘托出", "出神入化"
+            "不期而遇", "懵懵懂懂", "骄兵必败",
+            "春暖花开", "开天辟地", "地动山摇",
+            "源远流长", "长驱直入", "入木三分",
+            "分庭抗礼", "礼尚往来", "来者不善",
+            "善罢甘休", "休养生息", "息息相关",
+            "至高无上", "上下其手", "手不释卷",
+            "卷土重来", "来日方长", "长夜难明",
+            "明明白白", "白手起家", "家破人亡"
         ];
+        
+        const pinyinMap = {
+            "不期而遇": "bù qī ér yù",
+            "懵懵懂懂": "měng měng dǒng dǒng", 
+            "骄兵必败": "jiāo bīng bì bài",
+            "春暖花开": "chūn nuǎn huā kāi",
+            "开天辟地": "kāi tiān pì dì",
+            "地动山摇": "dì dòng shān yáo",
+            "源远流长": "yuán yuǎn liú cháng",
+            "长驱直入": "cháng qū zhí rù",
+            "入木三分": "rù mù sān fēn",
+            "分庭抗礼": "fēn tíng kàng lǐ",
+            "礼尚往来": "lǐ shàng wǎng lái",
+            "来者不善": "lái zhě bù shàn",
+            "善罢甘休": "shàn bà gān xiū",
+            "休养生息": "xiū yǎng shēng xī",
+            "息息相关": "xī xī xiāng guān",
+            "至高无上": "zhì gāo wú shàng",
+            "上下其手": "shàng xià qí shǒu",
+            "手不释卷": "shǒu bù shì juàn",
+            "卷土重来": "juàn tǔ chóng lái",
+            "来日方长": "lái rì fāng cháng",
+            "长夜难明": "cháng yè nán míng",
+            "明明白白": "míng míng bái bái",
+            "白手起家": "bái shǒu qǐ jiā",
+            "家破人亡": "jiā pò rén wáng"
+        };
         
         let level = 1;
         let score = 0;
@@ -553,15 +604,11 @@
         let freeCount = 3;
         let board = [];
         let selected = [];
-        let currentIdiom = "";
+        let targetIdioms = [];
+        let isPaused = false;
         
-        function showPage(page) {
-            alert(page + ' 功能开发中...');
-        }
-        
-        function backToHome() {
-            document.getElementById('homePage').classList.remove('hidden');
-            document.getElementById('gamePage').classList.remove('active');
+        function showTip(text) {
+            alert(text + ' 功能开发中...');
         }
         
         function startGame() {
@@ -577,67 +624,105 @@
         }
         
         function initGame() {
-            updateDisplay();
+            document.getElementById('levelTitle').textContent = '第 ' + level + ' 关';
+            
+            // 选择3个目标成语
+            targetIdioms = [];
+            const available = [...idioms];
+            for (let i = 0; i < 3; i++) {
+                const idx = Math.floor(Math.random() * available.length);
+                targetIdioms.push(available.splice(idx, 1)[0]);
+            }
+            
+            // 显示目标成语
+            const targetHtml = targetIdioms.map(id => `
+                <div class="target-idiom">
+                    <div class="target-text">${id}</div>
+                    <div class="target-pinyin">${pinyinMap[id] || ''}</div>
+                </div>
+            `).join('');
+            document.getElementById('targetIdioms').innerHTML = targetHtml;
+            
+            // 生成方块
             generateBoard();
             renderBoard();
         }
         
-        function updateDisplay() {
-            document.getElementById('levelNum').textContent = level;
-            document.getElementById('scoreNum').textContent = score;
-            document.getElementById('coinCount').textContent = coins;
-        }
-        
         function generateBoard() {
-            const tileCount = Math.min(12 + level * 2, 30);
-            const actualCount = Math.floor(tileCount / 3) * 3;
+            // 每个成语拆成2-4字块
             board = [];
+            targetIdioms.forEach(idiom => {
+                const chars = idiom.split('');
+                // 随机决定如何拆分（2+2, 3+1, 1+2+1等）
+                if (chars.length === 4) {
+                    const split = Math.random() > 0.5 ? 2 : 1;
+                    board.push(chars.slice(0, split).join(''));
+                    board.push(chars.slice(split).join(''));
+                } else {
+                    chars.forEach(c => board.push(c));
+                }
+            });
             
-            for (let i = 0; i < actualCount / 3; i++) {
+            // 填充到18-24个
+            while (board.length < 18) {
                 const idiom = idioms[Math.floor(Math.random() * idioms.length)];
-                board.push(idiom, idiom, idiom);
+                const chars = idiom.split('');
+                const split = Math.floor(Math.random() * (chars.length - 1)) + 1;
+                board.push(chars.slice(0, split).join(''));
+                board.push(chars.slice(split).join(''));
+            }
+            
+            // 补齐到偶数
+            while (board.length % 2 !== 0) {
+                board.push(board[0]);
             }
             
             board.sort(() => Math.random() - 0.5);
-            currentIdiom = board[Math.floor(Math.random() * board.length)];
-            document.getElementById('currentIdiom').textContent = currentIdiom;
-            document.getElementById('remainingNum').textContent = board.length;
+            document.getElementById('remainingCount').textContent = board.length;
         }
         
         function renderBoard() {
-            const boardEl = document.getElementById('board');
-            boardEl.innerHTML = '';
-            board.forEach((idiom, index) => {
+            const grid = document.getElementById('tileGrid');
+            grid.innerHTML = '';
+            
+            const cols = board.length > 20 ? 5 : 4;
+            grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            
+            board.forEach((text, idx) => {
                 const tile = document.createElement('div');
-                tile.className = 'tile' + (idiom ? '' : ' empty');
-                tile.textContent = idiom || '';
-                tile.dataset.index = index;
-                if (idiom) {
-                    tile.onclick = () => selectTile(index);
+                tile.className = 'tile' + (text ? '' : ' empty');
+                tile.textContent = text;
+                tile.dataset.index = idx;
+                if (text) {
+                    tile.onclick = () => selectTile(idx);
                 }
-                boardEl.appendChild(tile);
+                grid.appendChild(tile);
             });
         }
         
-        function selectTile(index) {
+        function selectTile(idx) {
             const tiles = document.querySelectorAll('.tile');
             
-            if (board[index] === null) return;
+            if (board[idx] === null) return;
             
-            if (tile.classList.contains('selected')) {
-                tile.classList.remove('selected');
-                selected = selected.filter(i => i !== index);
+            if (tiles[idx].classList.contains('selected')) {
+                tiles[idx].classList.remove('selected');
+                selected = selected.filter(i => i !== idx);
             } else {
-                tile.classList.add('selected');
-                selected.push(index);
+                tiles[idx].classList.add('selected');
+                selected.push(idx);
             }
             
-            if (selected.length === 3) {
-                const id1 = board[selected[0]];
-                const id2 = board[selected[1]];
-                const id3 = board[selected[2]];
+            // 检查是否匹配
+            if (selected.length === 2) {
+                const t1 = board[selected[0]];
+                const t2 = board[selected[1]];
                 
-                if (id1 === id2 && id2 === id3) {
+                // 检查是否能组成目标成语
+                const combined = t1 + t2;
+                if (targetIdioms.includes(combined) || targetIdioms.includes(t2 + t1)) {
+                    matchTiles();
+                } else if (t1 === t2) {
                     matchTiles();
                 } else {
                     setTimeout(() => {
@@ -655,8 +740,8 @@
                 tiles[i].classList.add('matched');
             });
             
-            score += 100 * level;
-            coins += 10;
+            score += 50;
+            coins += 5;
             
             setTimeout(() => {
                 selected.forEach(i => {
@@ -666,67 +751,54 @@
                     tiles[i].textContent = '';
                 });
                 selected = [];
-                updateDisplay();
-                document.getElementById('remainingNum').textContent = board.filter(x => x !== null).length;
                 
                 const remaining = board.filter(x => x !== null).length;
+                document.getElementById('remainingCount').textContent = remaining;
+                
                 if (remaining === 0) {
                     showResult(true);
-                } else if (remaining < 3) {
+                } else if (remaining < 4) {
                     showResult(false);
                 }
             }, 400);
         }
         
         function useHint() {
-            if (selected.length === 0) {
-                alert('请先选择一个成语');
-                return;
-            }
-            
-            const idiom = board[selected[0]];
+            // 高亮提示
             const tiles = document.querySelectorAll('.tile');
-            
-            board.forEach((id, idx) => {
-                if (id === idiom && !selected.includes(idx)) {
+            board.forEach((text, idx) => {
+                if (text && targetIdioms.some(id => id.includes(text))) {
                     tiles[idx].style.borderColor = '#ff6600';
                     setTimeout(() => {
                         tiles[idx].style.borderColor = '';
-                    }, 1000);
+                    }, 1500);
                 }
             });
         }
         
-        function shuffleBoard() {
-            const active = board.filter(x => x !== null);
-            active.sort(() => Math.random() - 0.5);
-            
-            let idx = 0;
-            board = board.map(x => x !== null ? active[idx++] : null);
-            renderBoard();
+        function useTool(type) {
+            alert(type + ' 道具开发中...');
+        }
+        
+        function togglePause() {
+            isPaused = !isPaused;
+            document.querySelector('.pause-btn').textContent = isPaused ? '▶' : '⏸';
         }
         
         function showResult(isWin) {
             const modal = document.getElementById('resultModal');
-            const title = document.getElementById('modalTitle');
-            const text = document.getElementById('modalText');
-            
-            if (isWin) {
-                title.textContent = '🎉 通关成功';
-                text.textContent = `太棒了！完成关卡 ${level}，金币+${50 * level}`;
-                coins += 50 * level;
-            } else {
-                title.textContent = '😅 挑战失败';
-                text.textContent = '剩余方块不足3个，继续加油！';
-            }
-            
-            updateDisplay();
+            document.getElementById('modalTitle').textContent = isWin ? '🎉 通关成功' : '😅 挑战失败';
+            document.getElementById('modalText').textContent = isWin ? 
+                `太棒了！完成第 ${level} 关，金币+${20 * level}` : 
+                '剩余方块不足，继续加油！';
             modal.classList.add('active');
         }
         
         function nextLevel() {
             document.getElementById('resultModal').classList.remove('active');
-            level++;
+            if (selected.length === 0 || !document.querySelector('.tile.matched')) {
+                level++;
+            }
             initGame();
         }
     </script>
