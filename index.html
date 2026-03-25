@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>诗词接龙 - 成语三消</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Microsoft YaHei', sans-serif;
+            color: #fff;
+        }
+        .header {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #f0d060;
+            text-shadow: 0 0 10px rgba(240,208,96,0.5);
+        }
+        .score-panel {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+        }
+        .score-item {
+            text-align: center;
+        }
+        .score-label {
+            color: #888;
+            font-size: 12px;
+        }
+        .score-value {
+            color: #f0d060;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .game-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+        .idiom-display {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 15px 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: 2px solid rgba(240,208,96,0.3);
+        }
+        .idiom-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        .idiom-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f0d060;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            padding: 15px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .tile {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(145deg, #2a2a4a, #1a1a3a);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            text-align: center;
+            line-height: 1.2;
+            padding: 2px;
+        }
+        .tile:hover {
+            transform: scale(1.05);
+            border-color: #f0d060;
+        }
+        .tile.selected {
+            border-color: #f0d060;
+            background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+            box-shadow: 0 0 15px rgba(240,208,96,0.5);
+        }
+        .tile.matched {
+            animation: match 0.3s ease;
+            background: rgba(100, 255, 100, 0.3);
+        }
+        @keyframes match {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        .hint-area {
+            height: 30px;
+            color: #888;
+            font-size: 14px;
+            text-align: center;
+        }
+        .tools {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .tool-btn {
+            padding: 10px 20px;
+            background: linear-gradient(145deg, #2a4a6a, #1a3a5a);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tool-btn:hover {
+            background: linear-gradient(145deg, #3a5a7a, #2a4a6a);
+        }
+        .tool-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .modal.hidden {
+            display: none;
+        }
+        .modal-content {
+            background: linear-gradient(145deg, #1a1a3e, #16213e);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid #f0d060;
+            max-width: 300px;
+        }
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f0d060;
+            margin-bottom: 15px;
+        }
+        .modal-text {
+            color: #ccc;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .modal-btn {
+            padding: 12px 30px;
+            background: linear-gradient(145deg, #f0d060, #d4a840);
+            border: none;
+            border-radius: 10px;
+            color: #1a1a2e;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .modal-btn:hover {
+            background: linear-gradient(145deg, #ffe080, #f0d060);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">📜 诗词接龙</div>
+        <div class="score-panel">
+            <div class="score-item">
+                <div class="score-label">关卡</div>
+                <div class="score-value" id="level">1</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">分数</div>
+                <div class="score-value" id="score">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">剩余</div>
+                <div class="score-value" id="remaining">18</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="idiom-display">
+            <div class="idiom-label">当前接龙成语</div>
+            <div class="idiom-text" id="currentIdiom">-</div>
+        </div>
+
+        <div class="board" id="board"></div>
+
+        <div class="hint-area" id="hint"></div>
+
+        <div class="tools">
+            <button class="tool-btn" id="hintBtn" onclick="useHint()">💡 提示</button>
+            <button class="tool-btn" id="shuffleBtn" onclick="shuffleBoard()">🔀 洗牌</button>
+            <button class="tool-btn" id="undoBtn" onclick="undoMove()">↩️ 撤回</button>
+        </div>
+    </div>
+
+    <div class="modal hidden" id="gameOverModal">
+        <div class="modal-content">
+            <div class="modal-title" id="modalTitle">挑战失败</div>
+            <div class="modal-text" id="modalText">成语积累 +10</div>
+            <button class="modal-btn" onclick="nextLevel()">继续</button>
+        </div>
+    </div>
+
+    <script>
+        // 诗词接龙成语库
+        const idioms = [
+            "春暖花开", "开天辟地", "地动山摇", "摇摇欲坠", "坠入深渊",
+            "源远流长", "长驱直入", "入木三分", "分庭抗礼", "礼尚往来",
+            "来者不善", "善罢甘休", "休养生息", "息息相关", "关怀备至",
+            "至高无上", "上下其手", "手不释卷", "卷土重来", "来日方长",
+            "长夜难明", "明明白白", "白手起家", "家破人亡", "亡羊补牢",
+            "牢不可破", "破镜重圆", "圆凿方枘", "枘凿方枘", "枘凿方圆",
+            "圆颅方趾", "趾高气扬", "扬眉吐气", "气吞山河", "河山带砺",
+            "砺山带河", "河清海晏", "晏开之警", "警觉过度", "度日如年",
+            "年富力强", "强弩之末", "末节细行", "行成于思", "思前想后",
+            "后会有期", "期期艾艾", "艾发衰容", "容光焕发", "发扬光大",
+            "大器晚成", "成千上万", "万古长青", "青出于蓝", "蓝田生玉",
+            "玉洁冰清", "清尘浊水", "水落石出", "出生入死", "死不瞑目",
+            "目不暇接", "接二连三", "三心二意", "意气风发", "发人深省",
+            "省吃俭用", "用兵如神", "神出鬼没", "没日没夜", "夜深人静",
+            "静观其变", "变本加厉", "厉兵秣马", "马到成功", "功德无量",
+            "量入为出", "出生入死", "死而后已", "已知之明", "明镜高悬",
+            "悬壶济世", "世态炎凉", "凉薄之人", "人山人海", "海阔天空",
+            "空穴来风", "风吹草动", "动人心弦", "弦外之音", "音容笑貌",
+            "貌合神离", "离经叛道", "道听途说", "说一不二", "二龙戏珠"
+        ];
+
+        let level = 1;
+        let score = 0;
+        let board = [];
+        let selected = [];
+        let currentIdiom = "";
+        let lastMove = null;
+
+        function init() {
+            updateDisplay();
+            generateBoard();
+            renderBoard();
+        }
+
+        function updateDisplay() {
+            document.getElementById('level').textContent = level;
+            document.getElementById('score').textContent = score;
+            document.getElementById('remaining').textContent = board.length;
+        }
+
+        function generateBoard() {
+            // 根据关卡确定方块数量
+            const baseCount = 12 + level * 2;
+            const count = Math.min(baseCount, 30);
+            
+            // 随机选择成语，确保有3的倍数个
+            const actualCount = Math.floor(count / 3) * 3;
+            board = [];
+            
+            // 添加3个一组的成语
+            for (let i = 0; i < actualCount / 3; i++) {
+                const idiom = idioms[Math.floor(Math.random() * idioms.length)];
+                board.push(idiom, idiom, idiom);
+            }
+            
+            // 打乱顺序
+            board.sort(() => Math.random() - 0.5);
+            
+            // 选择一个作为接龙目标
+            currentIdiom = board[Math.floor(Math.random() * board.length)];
+            document.getElementById('currentIdiom').textContent = currentIdiom;
+        }
+
+        function renderBoard() {
+            const boardEl = document.getElementById('board');
+            boardEl.innerHTML = '';
+            board.forEach((idiom, index) => {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                tile.textContent = idiom;
+                tile.dataset.index = index;
+                tile.onclick = () => selectTile(index);
+                boardEl.appendChild(tile);
+            });
+        }
+
+        function selectTile(index) {
+            const tiles = document.querySelectorAll('.tile');
+            const tile = tiles[index];
+            
+            if (board[index] === null) return;
+            
+            // 选中/取消选中
+            if (tile.classList.contains('selected')) {
+                tile.classList.remove('selected');
+                selected = selected.filter(i => i !== index);
+            } else {
+                tile.classList.add('selected');
+                selected.push(index);
+            }
+            
+            // 检查是否选中3个相同的
+            if (selected.length === 3) {
+                const idiom1 = board[selected[0]];
+                const idiom2 = board[selected[1]];
+                const idiom3 = board[selected[2]];
+                
+                if (idiom1 === idiom2 && idiom2 === idiom3) {
+                    // 匹配成功！
+                    matchTiles();
+                } else {
+                    // 不匹配，取消选中
+                    setTimeout(() => {
+                        selected.forEach(i => tiles[i].classList.remove('selected'));
+                        selected = [];
+                    }, 300);
+                }
+            }
+        }
+
+        function matchTiles() {
+            const tiles = document.querySelectorAll('.tile');
+            
+            // 保存移动记录
+            lastMove = {
+                indices: [...selected],
+                idiom: board[selected[0]]
+            };
+            
+            // 播放动画
+            selected.forEach(i => {
+                tiles[i].classList.add('matched');
+            });
+            
+            // 更新分数
+            score += 100 * level;
+            
+            // 延迟移除方块
+            setTimeout(() => {
+                selected.forEach(i => {
+                    board[i] = null;
+                    tiles[i].classList.remove('matched', 'selected');
+                    tiles[i].textContent = '';
+                });
+                selected = [];
+                updateDisplay();
+                
+                // 检查是否通关
+                const remaining = board.filter(x => x !== null).length;
+                if (remaining === 0) {
+                    showModal(true);
+                } else if (remaining < 3) {
+                    showModal(false);
+                }
+            }, 300);
+        }
+
+        function useHint() {
+            if (selected.length === 0) {
+                document.getElementById('hint').textContent = '请先选择一个成语';
+                return;
+            }
+            
+            const selectedIdiom = board[selected[0]];
+            const matching = board.map((id, idx) => id === selectedIdiom ? idx : -1).filter(i => i !== -1 && !selected.includes(i));
+            
+            if (matching.length > 0) {
+                const tiles = document.querySelectorAll('.tile');
+                matching.forEach(i => tiles[i].classList.add('selected'));
+                setTimeout(() => {
+                    matching.forEach(i => tiles[i].classList.remove('selected'));
+                }, 500);
+            }
+        }
+
+        function shuffleBoard() {
+            const activeTiles = board.filter(x => x !== null);
+            activeTiles.sort(() => Math.random() - 0.5);
+            
+            let idx = 0;
+            board = board.map(x => x !== null ? activeTiles[idx++] : null);
+            renderBoard();
+        }
+
+        function undoMove() {
+            if (!lastMove) {
+                document.getElementById('hint').textContent = '没有可撤回的步骤';
+                return;
+            }
+            
+            // 简单处理：直接重新生成
+            generateBoard();
+            renderBoard();
+            lastMove = null;
+        }
+
+        function showModal(isWin) {
+            const modal = document.getElementById('gameOverModal');
+            const title = document.getElementById('modalTitle');
+            const text = document.getElementById('modalText');
+            
+            if (isWin) {
+                title.textContent = '🎉 通关成功！';
+                text.textContent = `太棒了！完成关卡 ${level}，积分 +${100 * level}`;
+            } else {
+                title.textContent = '😅 挑战失败';
+                text.textContent = '剩余方块不足3个，继续加油！';
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function nextLevel() {
+            document.getElementById('gameOverModal').classList.add('hidden');
+            if (selected.length === 0 || lastMove) {
+                level++;
+            }
+            generateBoard();
+            renderBoard();
+            updateDisplay();
+        }
+
+        init();
+    </script>
+</body>
+</html>
